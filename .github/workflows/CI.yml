@@ -17,7 +17,7 @@ jobs:
       - name: Build ffmpeg-core
         run: make prd
       - name: Upload core
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ffmpeg-core
           path: packages/core/dist/*
@@ -32,7 +32,7 @@ jobs:
       - name: Build ffmpet-core-mt
         run: make prd-mt
       - name: Upload core-mt
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ffmpeg-core-mt
           path: packages/core-mt/dist/*
