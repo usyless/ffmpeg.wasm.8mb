@@ -25,13 +25,13 @@ jobs:
       - name: Inspect output
         run: |
           echo "=== Built files in dist/ ==="
-          ls -R dist/
+          ls -R packages/ffmpeg/dist/
 
       - name: Upload JS Artifacts
         uses: actions/upload-artifact@v7
         with:
           name: ffmpeg-js-dist
           path: |
-            dist/umd/
-            dist/esm/
+            packages/ffmpeg/dist/umd/
+            packages/ffmpeg/dist/esm/
           retention-days: 14
