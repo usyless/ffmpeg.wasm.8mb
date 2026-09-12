@@ -22,5 +22,5 @@ CM_FLAGS=(
 
 mkdir -p build
 cd build
-emmake cmake .. -DCMAKE_C_FLAGS="$CXXFLAGS" ${CM_FLAGS[@]}
+emcmake cmake .. -DCMAKE_C_FLAGS="$CXXFLAGS" ${CM_FLAGS[@]}
 emmake make install

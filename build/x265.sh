@@ -4,6 +4,9 @@ set -euo pipefail
 
 BASE_FLAGS=(
   -DCMAKE_TOOLCHAIN_FILE=$EM_TOOLCHAIN_FILE
+  -DX64=1
+  -DX86_64=1
+  -DENABLE_ASSEMBLY=OFF
   -DENABLE_LIBNUMA=OFF
   -DENABLE_SHARED=OFF
   -DENABLE_CLI=OFF
@@ -38,17 +41,17 @@ cd build
 mkdir -p main 10bit 12bit
 
 cd 12bit
-emmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_12BIT[@]}
+emcmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_12BIT[@]}
 emmake make -j
 
 cd ../10bit 
-emmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_10BIT[@]}
+emcmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_10BIT[@]}
 emmake make -j
 
 cd ../main
 ln -sf ../10bit/libx265.a libx265_main10.a
 ln -sf ../12bit/libx265.a libx265_main12.a
-emmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_MAIN[@]}
+emcmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_MAIN[@]}
 emmake make -j
 mv libx265.a libx265_main.a
 

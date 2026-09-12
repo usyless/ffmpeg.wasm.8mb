@@ -20,7 +20,7 @@ rm -rf $CMBUILD_DIR
 mkdir -p $CMBUILD_DIR
 cd $CMBUILD_DIR
 
-emmake cmake .. \
+emcmake cmake .. \
   -DAOM_EXTRA_C_FLAGS="$CFLAGS" \
   -DAOM_EXTRA_CXX_FLAGS="$CFLAGS" \
   ${CM_FLAGS[@]}
