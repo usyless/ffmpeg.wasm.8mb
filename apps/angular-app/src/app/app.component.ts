@@ -28,10 +28,6 @@ export class AppComponent {
         `${baseURL}/ffmpeg-core.wasm`,
         'application/wasm',
       ),
-      workerURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.worker.js`,
-        'text/javascript',
-      ),
     });
     this.loaded = true;
   }

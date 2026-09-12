@@ -31,7 +31,7 @@ CONF_FLAGS=(
   -sMODULARIZE
   
   # Multi-threading settings
-  ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=8}     # Dropped from 8 to 4 (8 often hangs/stalls browser worker startup)
+  ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=4}     # Dropped to 4 to avoid Chromium per-host connection deadlocks during worker script fetching
   ${FFMPEG_MT:+ -sINITIAL_MEMORY=256MB}    # Dropped from 1024MB
   ${FFMPEG_MT:+ -sMAXIMUM_MEMORY=2048MB}   # Safe 2GB ceiling for 32-bit wasm SharedArrayBuffer
   ${FFMPEG_MT:+ -sALLOW_MEMORY_GROWTH}     # Modern Emscripten safely allows growth with pthreads
@@ -39,7 +39,7 @@ CONF_FLAGS=(
   # Single-threading settings
   ${FFMPEG_ST:+ -sINITIAL_MEMORY=32MB -sALLOW_MEMORY_GROWTH}
 
-  -sINCOMING_MODULE_JS_API=mainScriptUrlOrBlob # keep mainScriptUrlOrBlob override available on modern emscripten
+  -sINCOMING_MODULE_JS_API=mainScriptUrlOrBlob,locateFile,instantiateWasm,wasmBinary,print,printErr,onAbort,onExit,onRuntimeInitialized,preRun,postRun,noExitRuntime,noInitialRun,ENVIRONMENT,arguments,wasm,monitorRunDependencies,statusMessage,canvas # preserve both mainScriptUrlOrBlob and locateFile on modern emscripten
   -sEXPORT_NAME="$EXPORT_NAME"
   -sEXPORTED_FUNCTIONS=$(node src/bind/ffmpeg/export.js)
   -sEXPORTED_RUNTIME_METHODS=$(node src/bind/ffmpeg/export-runtime.js)

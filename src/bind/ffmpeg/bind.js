@@ -115,36 +115,18 @@ function reset() {
   Module["timeout"] = -1;
 }
 
-/**
- * In older multithread builds of ffmpeg.wasm, the bootstrap process is like:
- * 1. Execute ffmpeg-core.js
- * 2. ffmpeg-core.js spawns workers by calling `new Worker("ffmpeg-core.worker.js")`
- * 3. ffmpeg-core.worker.js imports ffmpeg-core.js
- * 4. ffmpeg-core.js imports ffmpeg-core.wasm
- *
- * It is a straightforward process when all files are in the same location.
- * But when files are in different location (or Blob URL), #4 fails because
- * there is no way to pass custom ffmpeg-core.wasm URL to ffmpeg-core.worker.js
- * when it imports ffmpeg-core.js in #3.
- *
- * To fix this issue, a hack here is leveraging mainScriptUrlOrBlob variable by
- * adding wasmURL and optional workerURL in base64 format as query string. ex:
- *
- *   http://example.com/ffmpeg-core.js#{btoa(JSON.stringify({"wasmURL": "...", "workerURL": "..."}))}
- *
- * Thus, we can successfully extract custom URLs using _locateFile funciton.
- */
+const _customLocateFile = Module["locateFile"];
 function _locateFile(path, prefix) {
-  const mainScriptUrlOrBlob = Module["mainScriptUrlOrBlob"];
-  if (mainScriptUrlOrBlob) {
-    const { wasmURL, workerURL } = JSON.parse(
-      atob(mainScriptUrlOrBlob.slice(mainScriptUrlOrBlob.lastIndexOf("#") + 1))
-    );
-    if (path.endsWith(".wasm")) return wasmURL;
-    if (path.endsWith(".worker.js") && workerURL) return workerURL;
+  if (_customLocateFile) {
+    const url = _customLocateFile(path, prefix);
+    if (url) return url;
+  }
+  if (path.endsWith(".wasm") && Module["wasmURL"]) {
+    return Module["wasmURL"];
   }
   return prefix + path;
 }
+
 
 Module["stringToPtr"] = stringToPtr;
 Module["stringsToPtr"] = stringsToPtr;

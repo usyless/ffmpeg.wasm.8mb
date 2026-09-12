@@ -17,13 +17,6 @@ export interface FFMessageLoadConfig {
    */
   wasmURL?: string;
   /**
-   * Optional pthread worker URL for `ffmpeg-core` multithread builds that still emit a separate worker file.
-   *
-   * @ref: https://ffmpegwasm.netlify.app/docs/overview#architecture
-   * @defaultValue `undefined`
-   */
-  workerURL?: string;
-  /**
    * `ffmpeg.worker.js` URL. This worker is spawned when FFmpeg.load() is called, it is an essential worker and usually you don't need to update this config.
    *
    * @ref: https://ffmpegwasm.netlify.app/docs/overview#architecture

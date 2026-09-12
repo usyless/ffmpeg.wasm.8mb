@@ -28,10 +28,6 @@ export default function Home() {
         `${baseURL}/ffmpeg-core.wasm`,
         'application/wasm'
       ),
-      workerURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.worker.js`,
-        'text/javascript'
-      ),
     });
     setLoaded(true);
     setIsLoading(false);
