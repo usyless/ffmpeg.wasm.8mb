@@ -39,6 +39,7 @@ CONF_FLAGS=(
   # Single-threading settings
   ${FFMPEG_ST:+ -sINITIAL_MEMORY=32MB -sALLOW_MEMORY_GROWTH}
 
+  -sINCOMING_MODULE_JS_API=mainScriptUrlOrBlob # keep mainScriptUrlOrBlob override available on modern emscripten
   -sEXPORT_NAME="$EXPORT_NAME"
   -sEXPORTED_FUNCTIONS=$(node src/bind/ffmpeg/export.js)
   -sEXPORTED_RUNTIME_METHODS=$(node src/bind/ffmpeg/export-runtime.js)
