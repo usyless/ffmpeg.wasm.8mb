@@ -2658,11 +2658,7 @@ static int init_input_stream(int ist_index, char *error, int error_len)
         ist->dec_ctx->pkt_timebase = ist->st->time_base;
 
         if (!av_dict_get(ist->decoder_opts, "threads", NULL, 0))
-#ifdef __EMSCRIPTEN__
-            av_dict_set(&ist->decoder_opts, "threads", "1", 0);
-#else
             av_dict_set(&ist->decoder_opts, "threads", "auto", 0);
-#endif
         /* Attached pics are sparse, therefore we would not want to delay their decoding till EOF. */
         if (ist->st->disposition & AV_DISPOSITION_ATTACHED_PIC)
             av_dict_set(&ist->decoder_opts, "threads", "1", 0);
@@ -3170,11 +3166,7 @@ static int init_output_stream(OutputStream *ost, AVFrame *frame,
             ost->enc_ctx->subtitle_header_size = dec->subtitle_header_size;
         }
         if (!av_dict_get(ost->encoder_opts, "threads", NULL, 0))
-#ifdef __EMSCRIPTEN__
-            av_dict_set(&ost->encoder_opts, "threads", "4", 0);
-#else
             av_dict_set(&ost->encoder_opts, "threads", "auto", 0);
-#endif
 
         ret = hw_device_setup_for_encode(ost);
         if (ret < 0) {
