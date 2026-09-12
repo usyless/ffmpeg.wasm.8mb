@@ -80,11 +80,27 @@ const load = async ({
   const coreURL = _coreURL;
   const wasmURL = _wasmURL ? _wasmURL : _coreURL.replace(/.js$/g, ".wasm");
 
+  let coreBlobURL = coreURL;
+  if (!coreURL.startsWith("blob:") && !coreURL.startsWith("data:")) {
+    try {
+      const res = await fetch(coreURL);
+      const blob = await res.blob();
+      coreBlobURL = URL.createObjectURL(
+        blob.type === "text/javascript" || blob.type === "application/javascript"
+          ? blob
+          : new Blob([blob], { type: "text/javascript" })
+      );
+    } catch {
+      // If fetching as blob fails, fall back to coreURL
+    }
+  }
+
   ffmpeg = await (self as WorkerGlobalScope).createFFmpegCore({
-    mainScriptUrlOrBlob: coreURL,
+    mainScriptUrlOrBlob: coreBlobURL,
     wasmURL,
     locateFile: (path: string, prefix: string) => {
       if (path.endsWith(".wasm")) return wasmURL;
+      if (path.endsWith(".js")) return coreBlobURL;
       return prefix + path;
     },
   });

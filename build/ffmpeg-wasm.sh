@@ -39,7 +39,7 @@ CONF_FLAGS=(
   # Single-threading settings
   ${FFMPEG_ST:+ -sINITIAL_MEMORY=32MB -sALLOW_MEMORY_GROWTH}
 
-  -sINCOMING_MODULE_JS_API=mainScriptUrlOrBlob,locateFile,instantiateWasm,wasmBinary,print,printErr,onAbort,onExit,onRuntimeInitialized,preRun,postRun,noExitRuntime,noInitialRun,ENVIRONMENT,arguments,wasm,monitorRunDependencies,statusMessage,canvas # preserve both mainScriptUrlOrBlob and locateFile on modern emscripten
+  -sINCOMING_MODULE_JS_API=mainScriptUrlOrBlob,locateFile,wasmURL,instantiateWasm,wasmBinary,print,printErr,onAbort,onExit,onRuntimeInitialized,preRun,postRun,noExitRuntime,noInitialRun,ENVIRONMENT,arguments,wasm,monitorRunDependencies,statusMessage,canvas # preserve mainScriptUrlOrBlob, locateFile, and wasmURL on modern emscripten
   -sEXPORT_NAME="$EXPORT_NAME"
   -sEXPORTED_FUNCTIONS=$(node src/bind/ffmpeg/export.js)
   -sEXPORTED_RUNTIME_METHODS=$(node src/bind/ffmpeg/export-runtime.js)

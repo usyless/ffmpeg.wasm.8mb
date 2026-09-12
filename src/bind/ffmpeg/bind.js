@@ -124,6 +124,9 @@ function _locateFile(path, prefix) {
   if (path.endsWith(".wasm") && Module["wasmURL"]) {
     return Module["wasmURL"];
   }
+  if (path.endsWith(".js") && Module["mainScriptUrlOrBlob"]) {
+    return Module["mainScriptUrlOrBlob"];
+  }
   return prefix + path;
 }
 
