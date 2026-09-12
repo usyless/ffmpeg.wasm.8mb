@@ -13,6 +13,8 @@ CONF_FLAGS=(
   --disable-debug               # disable debug mode
   --disable-runtime-cpudetect   # disable cpu detection
   --disable-autodetect          # disable env auto detect
+  --disable-avdevice
+  --disable-postproc
 
   # assign toolchains and extra flags
   --nm=emnm
