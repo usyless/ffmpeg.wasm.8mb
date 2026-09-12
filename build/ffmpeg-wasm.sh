@@ -13,37 +13,36 @@ CONF_FLAGS=(
   -I$INSTALL_DIR/include 
   -L$INSTALL_DIR/lib 
   -Llibavcodec 
-  -Llibavdevice 
   -Llibavfilter 
   -Llibavformat 
   -Llibavutil 
-  -Llibpostproc 
   -Llibswresample 
   -Llibswscale 
   -lavcodec 
-  -lavdevice 
-  -lavfilter 
-  -lavformat 
+  -lavfilter       # Required for the 'scale' filter (resizing)
+  -lavformat       # Required for mp4 muxing / demuxing
   -lavutil 
-  -lpostproc 
-  -lswresample 
-  -lswscale 
+  -lswresample     # Required if video has an audio track (AAC)
+  -lswscale        # Required for pixel format conversion & scaling
   -Wno-deprecated-declarations 
   $LDFLAGS 
   -sENVIRONMENT=worker
-  -sWASM_BIGINT                            # enable big int support
-  -sUSE_SDL=2                              # use emscripten SDL2 lib port
-  -sSTACK_SIZE=5MB                         # increase stack size to support libopus
-  -sMODULARIZE                             # modularized to use as a library
-  ${FFMPEG_MT:+ -sINITIAL_MEMORY=1024MB}   # ALLOW_MEMORY_GROWTH is not recommended when using threads, thus we use a large initial memory
-  # Avoid Chromium deadlocks during startup script fetching by limiting
-  # the number of prewarmed pthread workers created at load time.
-  ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=8}
-  ${FFMPEG_ST:+ -sINITIAL_MEMORY=32MB -sALLOW_MEMORY_GROWTH} # Use just enough memory as memory usage can grow
-  -sEXPORT_NAME="$EXPORT_NAME"             # required in browser env, so that user can access this module from window object
+  -sWASM_BIGINT
+  -sMODULARIZE
+  
+  # Multi-threading settings
+  ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=8}     # Dropped from 8 to 4 (8 often hangs/stalls browser worker startup)
+  ${FFMPEG_MT:+ -sINITIAL_MEMORY=256MB}    # Dropped from 1024MB
+  ${FFMPEG_MT:+ -sMAXIMUM_MEMORY=2048MB}   # Safe 2GB ceiling for 32-bit wasm SharedArrayBuffer
+  ${FFMPEG_MT:+ -sALLOW_MEMORY_GROWTH}     # Modern Emscripten safely allows growth with pthreads
+
+  # Single-threading settings
+  ${FFMPEG_ST:+ -sINITIAL_MEMORY=32MB -sALLOW_MEMORY_GROWTH}
+
   -sINCOMING_MODULE_JS_API=mainScriptUrlOrBlob # keep mainScriptUrlOrBlob override available on modern emscripten
-  -sEXPORTED_FUNCTIONS=$(node src/bind/ffmpeg/export.js) # exported functions
-  -sEXPORTED_RUNTIME_METHODS=$(node src/bind/ffmpeg/export-runtime.js) # exported built-in functions
+  -sEXPORT_NAME="$EXPORT_NAME"
+  -sEXPORTED_FUNCTIONS=$(node src/bind/ffmpeg/export.js)
+  -sEXPORTED_RUNTIME_METHODS=$(node src/bind/ffmpeg/export-runtime.js)
   -lworkerfs.js
   --pre-js src/bind/ffmpeg/bind.js        # extra bindings, contains most of the ffmpeg.wasm javascript code
   # ffmpeg source code
