@@ -31,7 +31,7 @@ CONF_FLAGS=(
   -sMODULARIZE
   
   # Multi-threading settings
-  ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=4}     # Dropped to 4 to avoid Chromium per-host connection deadlocks during worker script fetching
+  ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=8}     # 8 pre-allocated workers comfortably fits decoder (1), filter (1), and encoder (4) without dynamic worker deadlock
   ${FFMPEG_MT:+ -sINITIAL_MEMORY=256MB}    # Dropped from 1024MB
   ${FFMPEG_MT:+ -sMAXIMUM_MEMORY=2048MB}   # Safe 2GB ceiling for 32-bit wasm SharedArrayBuffer
   ${FFMPEG_MT:+ -sALLOW_MEMORY_GROWTH}     # Modern Emscripten safely allows growth with pthreads
