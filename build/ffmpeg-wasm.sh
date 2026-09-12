@@ -25,6 +25,7 @@ CONF_FLAGS=(
   -lswresample     # Required if video has an audio track (AAC)
   -lswscale        # Required for pixel format conversion & scaling
   -Wno-deprecated-declarations 
+  -Wno-pthreads-mem-growth 
   $LDFLAGS 
   -sENVIRONMENT=worker
   -sMODULARIZE
