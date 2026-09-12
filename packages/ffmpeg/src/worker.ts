@@ -22,7 +22,7 @@ import type {
   ExitCode,
   FSNode,
   FileData,
-} from "./types";
+} from "./types.js";
 import { CORE_URL, FFMessageType } from "./const.js";
 import {
   ERROR_UNKNOWN_MESSAGE_TYPE,
