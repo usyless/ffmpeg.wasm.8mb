@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile-upstream:master-labs
 
 # Base emsdk image with environment variables.
-FROM emscripten/emsdk:6.0.4 AS emsdk-base
+FROM emscripten/emsdk:6.0.9 AS emsdk-base
 ARG EXTRA_CFLAGS
 ARG EXTRA_LDFLAGS
 ARG FFMPEG_ST
