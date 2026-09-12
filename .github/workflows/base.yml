@@ -1,0 +1,41 @@
+name: Build JS Wrapper
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-js:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Compile JS bundles
+        run: npm run build
+
+      - name: Inspect output
+        run: |
+          echo "=== Built files in dist/ ==="
+          ls -R dist/
+
+      - name: Upload JS Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: ffmpeg-js-dist
+          path: |
+            dist/umd/
+            dist/esm/
+          retention-days: 14
