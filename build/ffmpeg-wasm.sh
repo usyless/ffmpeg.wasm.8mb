@@ -32,7 +32,7 @@ CONF_FLAGS=(
   
   # Multi-threading settings
   ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=globalThis.navigator?.hardwareConcurrency?Math.min(Math.max(globalThis.navigator.hardwareConcurrency*2+2,8),32):16}
-  ${FFMPEG_MT:+ -sINITIAL_MEMORY=256MB}    # Dropped from 1024MB
+  ${FFMPEG_MT:+ -sINITIAL_MEMORY=1024MB}   # 1GB upfront prevents slow SharedArrayBuffer growth pauses during MT encoding
   ${FFMPEG_MT:+ -sMAXIMUM_MEMORY=2048MB}   # Safe 2GB ceiling for 32-bit wasm SharedArrayBuffer
   ${FFMPEG_MT:+ -sALLOW_MEMORY_GROWTH}     # Modern Emscripten safely allows growth with pthreads
 

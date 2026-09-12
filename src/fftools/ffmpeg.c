@@ -32,7 +32,13 @@
 #include <limits.h>
 #include <stdatomic.h>
 #include <stdint.h>
+#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+#if defined(__EMSCRIPTEN_PTHREADS__) || defined(_REENTRANT)
+#include <emscripten/threading.h>
+#endif
+int emscripten_num_logical_cores(void);
+#endif
 
 #if HAVE_IO_H
 #include <io.h>
@@ -2657,10 +2663,12 @@ static int init_input_stream(int ist_index, char *error, int error_len)
          * audio, and video decoders such as cuvid or mediacodec */
         ist->dec_ctx->pkt_timebase = ist->st->time_base;
 
-        if (!av_dict_get(ist->decoder_opts, "threads", NULL, 0))
 #ifdef __EMSCRIPTEN__
+        const AVDictionaryEntry *dec_t = av_dict_get(ist->decoder_opts, "threads", NULL, 0);
+        if (!dec_t || !strcmp(dec_t->value, "auto"))
             av_dict_set(&ist->decoder_opts, "threads", "2", 0);
 #else
+        if (!av_dict_get(ist->decoder_opts, "threads", NULL, 0))
             av_dict_set(&ist->decoder_opts, "threads", "auto", 0);
 #endif
         /* Attached pics are sparse, therefore we would not want to delay their decoding till EOF. */
@@ -3169,8 +3177,39 @@ static int init_output_stream(OutputStream *ost, AVFrame *frame,
             memcpy(ost->enc_ctx->subtitle_header, dec->subtitle_header, dec->subtitle_header_size);
             ost->enc_ctx->subtitle_header_size = dec->subtitle_header_size;
         }
+#ifdef __EMSCRIPTEN__
+        int nb_cores = emscripten_num_logical_cores();
+        if (nb_cores <= 0)
+            nb_cores = 4;
+        /*
+         * Dynamically size encoder threads to saturate available CPU cores
+         * while guaranteeing total FFmpeg threads never exceed the pre-allocated
+         * pthread pool (capped at 32 workers).
+         * Pipeline allocation: input demuxer (1) + decoder (2) + filter (1) + audio/margin (2) = 6.
+         * Safe encoder headroom: pool(32) - 6 = 26 threads max.
+         */
+        int max_enc_threads = nb_cores * 3 / 2;
+        if (max_enc_threads < 2)
+            max_enc_threads = 2;
+        if (max_enc_threads > 26)
+            max_enc_threads = 26;
+
+        char threads_str[16];
+        snprintf(threads_str, sizeof(threads_str), "%d", max_enc_threads);
+
+        const AVDictionaryEntry *e = av_dict_get(ost->encoder_opts, "threads", NULL, 0);
+        if (!e || !strcmp(e->value, "auto")) {
+            av_dict_set(&ost->encoder_opts, "threads", threads_str, 0);
+        } else {
+            int user_threads = atoi(e->value);
+            if (user_threads > 26) {
+                av_dict_set(&ost->encoder_opts, "threads", threads_str, 0);
+            }
+        }
+#else
         if (!av_dict_get(ost->encoder_opts, "threads", NULL, 0))
             av_dict_set(&ost->encoder_opts, "threads", "auto", 0);
+#endif
 
         ret = hw_device_setup_for_encode(ost);
         if (ret < 0) {
