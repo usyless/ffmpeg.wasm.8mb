@@ -5,6 +5,7 @@
     "declaration": true,
     "outDir": "./dist/esm",
     "target": "esnext",
+    "module": "nodenext",
     "moduleResolution": "nodenext"
   }
 }
