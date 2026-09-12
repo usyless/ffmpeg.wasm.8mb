@@ -48,7 +48,8 @@ function print(message) {
 }
 
 function printErr(message) {
-  if (!message.startsWith("Aborted(native code called abort())"))
+  const msg = typeof message === "string" ? message : (message?.toString?.() || "");
+  if (!msg.startsWith("Aborted(native code called abort())"))
     Module["logger"]({ type: "stderr", message });
 }
 
@@ -70,7 +71,8 @@ function exec(..._args) {
   try {
     Module["_ffmpeg"](args.length, stringsToPtr(args));
   } catch (e) {
-    if (!e.message.startsWith("Aborted")) {
+    const msg = (e && typeof e.message === "string") ? e.message : (typeof e === "string" ? e : (e?.toString?.() || ""));
+    if (!msg.startsWith("Aborted")) {
       throw e;
     }
   } finally {
@@ -85,7 +87,8 @@ function ffprobe(..._args) {
   try {
     Module["_ffprobe"](args.length, stringsToPtr(args));
   } catch (e) {
-    if (!e.message.startsWith("Aborted")) {
+    const msg = (e && typeof e.message === "string") ? e.message : (typeof e === "string" ? e : (e?.toString?.() || ""));
+    if (!msg.startsWith("Aborted")) {
       throw e;
     }
   } finally {
