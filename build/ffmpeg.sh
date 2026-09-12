@@ -24,6 +24,7 @@ CONF_FLAGS=(
   --dep-cc=emcc
   --extra-cflags="$CFLAGS"
   --extra-cxxflags="$CXXFLAGS"
+  --extra-ldflags="$LDFLAGS"
 
   # disable thread when FFMPEG_ST is NOT defined
   ${FFMPEG_ST:+ --disable-pthreads --disable-w32threads --disable-os2threads}
