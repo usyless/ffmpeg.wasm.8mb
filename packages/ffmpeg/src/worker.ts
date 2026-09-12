@@ -105,36 +105,6 @@ const load = async ({
     },
   });
 
-  if (typeof (ffmpeg as any).prewarmPool === "function") {
-    await (ffmpeg as any).prewarmPool();
-  } else {
-    const pThread = (ffmpeg as any).PThread;
-    if (
-      pThread &&
-      typeof pThread.allocateUnusedWorker === "function" &&
-      typeof pThread.loadWasmModuleToWorker === "function" &&
-      Array.isArray(pThread.unusedWorkers)
-    ) {
-      const cores = self.navigator?.hardwareConcurrency || 4;
-      const targetPoolSize = Math.min(
-        Math.max(Math.round(cores * 2.5 + 2), 16),
-        64
-      );
-      while (pThread.unusedWorkers.length < targetPoolSize) {
-        const batchSize = Math.min(
-          4,
-          targetPoolSize - pThread.unusedWorkers.length
-        );
-        const batch: Promise<unknown>[] = [];
-        for (let i = 0; i < batchSize; i++) {
-          const worker = pThread.allocateUnusedWorker();
-          batch.push(pThread.loadWasmModuleToWorker(worker));
-        }
-        await Promise.all(batch);
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      }
-    }
-  }
   ffmpeg.setLogger((data) =>
     self.postMessage({ type: FFMessageType.LOG, data })
   );

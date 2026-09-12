@@ -31,7 +31,7 @@ CONF_FLAGS=(
   -sMODULARIZE
   
   # Multi-threading settings
-  ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=4}     # Fast initial 4-worker bootstrap; staggered prewarmer expands pool to hardwareConcurrency
+  ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=globalThis.navigator?.hardwareConcurrency?Math.min(Math.max(globalThis.navigator.hardwareConcurrency*2+2,8),32):16}
   ${FFMPEG_MT:+ -sINITIAL_MEMORY=256MB}    # Dropped from 1024MB
   ${FFMPEG_MT:+ -sMAXIMUM_MEMORY=2048MB}   # Safe 2GB ceiling for 32-bit wasm SharedArrayBuffer
   ${FFMPEG_MT:+ -sALLOW_MEMORY_GROWTH}     # Modern Emscripten safely allows growth with pthreads
@@ -45,7 +45,6 @@ CONF_FLAGS=(
   -sEXPORTED_RUNTIME_METHODS=$(node src/bind/ffmpeg/export-runtime.js)
   -lworkerfs.js
   --pre-js src/bind/ffmpeg/bind.js        # extra bindings, contains most of the ffmpeg.wasm javascript code
-  ${FFMPEG_MT:+ --post-js src/bind/ffmpeg/post.js} # staggered worker pool prewarming support
   # ffmpeg source code
   src/fftools/cmdutils.c 
   src/fftools/ffmpeg.c 

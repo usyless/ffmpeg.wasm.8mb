@@ -1011,9 +1011,13 @@ int configure_filtergraph(FilterGraph *fg)
             if (ret < 0)
                 goto fail;
         } else {
+#ifdef __EMSCRIPTEN__
+            av_opt_set(fg->graph, "threads", "1", 0);
+#else
             e = av_dict_get(ost->encoder_opts, "threads", NULL, 0);
             if (e)
                 av_opt_set(fg->graph, "threads", e->value, 0);
+#endif
         }
 
         args[0] = 0;

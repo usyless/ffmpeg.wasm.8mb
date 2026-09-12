@@ -7,8 +7,4 @@ const EXPORTED_RUNTIME_METHODS = [
   "stringToUTF8",
 ];
 
-if (process.env.FFMPEG_MT) {
-  EXPORTED_RUNTIME_METHODS.push("PThread");
-}
-
 console.log(EXPORTED_RUNTIME_METHODS.join(","));
