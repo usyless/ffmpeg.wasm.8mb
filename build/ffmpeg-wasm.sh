@@ -41,6 +41,7 @@ CONF_FLAGS=(
   ${FFMPEG_MT:+ -sPTHREAD_POOL_SIZE=8}
   ${FFMPEG_ST:+ -sINITIAL_MEMORY=32MB -sALLOW_MEMORY_GROWTH} # Use just enough memory as memory usage can grow
   -sEXPORT_NAME="$EXPORT_NAME"             # required in browser env, so that user can access this module from window object
+  -sINCOMING_MODULE_JS_API=mainScriptUrlOrBlob # keep mainScriptUrlOrBlob override available on modern emscripten
   -sEXPORTED_FUNCTIONS=$(node src/bind/ffmpeg/export.js) # exported functions
   -sEXPORTED_RUNTIME_METHODS=$(node src/bind/ffmpeg/export-runtime.js) # exported built-in functions
   -lworkerfs.js
