@@ -6,3 +6,6 @@ export const ERROR_TERMINATED = new Error("called FFmpeg.terminate()");
 export const ERROR_IMPORT_FAILURE = new Error(
   "failed to import ffmpeg-core.js"
 );
+export const ERROR_CORE_URL_REQUIRED = new Error(
+  "coreURL is required, please pass { coreURL: ... } to ffmpeg.load()"
+);

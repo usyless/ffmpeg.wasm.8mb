@@ -5,15 +5,11 @@ export type FFFSPath = string;
  */
 export interface FFMessageLoadConfig {
   /**
-   * `ffmpeg-core.js` URL.
-   *
-   * @defaultValue `https://cdn.jsdelivr.net/npm/@ffmpeg/core@${CORE_VERSION}/dist/umd/ffmpeg-core.js`;
+   * `ffmpeg-core.js` URL. Required.
    */
   coreURL?: string;
   /**
-   * `ffmpeg-core.wasm` URL.
-   *
-   * @defaultValue `https://cdn.jsdelivr.net/npm/@ffmpeg/core@${CORE_VERSION}/dist/umd/ffmpeg-core.wasm`;
+   * `ffmpeg-core.wasm` URL. Defaults to deriving the path from coreURL by replacing .js with .wasm.
    */
   wasmURL?: string;
   /**
