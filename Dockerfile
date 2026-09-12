@@ -8,7 +8,7 @@ ARG FFMPEG_ST
 ARG FFMPEG_MT
 ENV INSTALL_DIR=/opt
 # We cannot upgrade to n6.0 as ffmpeg bin only supports multithread at the moment.
-ENV FFMPEG_VERSION=n8.1.2
+ENV FFMPEG_VERSION=n5.1.10
 ENV CFLAGS="-I$INSTALL_DIR/include $CFLAGS $EXTRA_CFLAGS"
 ENV CXXFLAGS="$CFLAGS"
 ENV LDFLAGS="-L$INSTALL_DIR/lib $LDFLAGS $CFLAGS $EXTRA_LDFLAGS"
@@ -22,13 +22,17 @@ RUN apt-get update && \
 
 # Build x264
 FROM emsdk-base AS x264-builder
-ADD https://code.videolan.org/videolan/x264.git#stable /src
+# ADD https://code.videolan.org/videolan/x264.git#stable /src
+ENV X264_BRANCH=4-cores
+ADD https://github.com/ffmpegwasm/x264.git#$X264_BRANCH /src
 COPY build/x264.sh /src/build.sh
 RUN bash -x /src/build.sh
 
 # Build x265
 FROM emsdk-base AS x265-builder
-ADD https://github.com/Multicorewareinc/x265.git#stable /src
+# ADD https://github.com/Multicorewareinc/x265.git#stable /src
+ENV X265_BRANCH=3.4
+ADD https://github.com/ffmpegwasm/x265.git#$X265_BRANCH /src
 COPY build/x265.sh /src/build.sh
 RUN bash -x /src/build.sh
 
