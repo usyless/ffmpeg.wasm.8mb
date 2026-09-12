@@ -123,6 +123,7 @@ export interface FFmpegCoreModule {
   ret: number;
   timeout: number;
   mainScriptUrlOrBlob: string;
+  wasmURL?: string;
 
   exec: (...args: string[]) => number;
   ffprobe: (...args: string[]) => number;

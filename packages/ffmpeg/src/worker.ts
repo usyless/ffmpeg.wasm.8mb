@@ -30,14 +30,22 @@ import {
   ERROR_IMPORT_FAILURE,
 } from "./errors.js";
 
+interface FFmpegCoreConfig extends Partial<FFmpegCoreModule> {
+  wasmURL?: string;
+}
+
+type FFmpegCoreConfigFactory = (
+  moduleOverrides?: FFmpegCoreConfig
+) => Promise<FFmpegCoreModule>;
+
 declare global {
   interface WorkerGlobalScope {
-    createFFmpegCore: FFmpegCoreModuleFactory;
+    createFFmpegCore: FFmpegCoreConfigFactory;
   }
 }
 
 interface ImportedFFmpegCoreModuleFactory {
-  default: FFmpegCoreModuleFactory;
+  default: FFmpegCoreConfigFactory;
 }
 
 let ffmpeg: FFmpegCoreModule;
