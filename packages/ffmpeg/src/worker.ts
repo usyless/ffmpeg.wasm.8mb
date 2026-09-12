@@ -69,13 +69,11 @@ const load = async ({
 
   const coreURL = _coreURL;
   const wasmURL = _wasmURL ? _wasmURL : _coreURL.replace(/.js$/g, ".wasm");
-  const workerURL = _workerURL
-    ? _workerURL
-    : _coreURL.replace(/.js$/g, ".worker.js");
+  const workerURL = _workerURL;
 
   ffmpeg = await (self as WorkerGlobalScope).createFFmpegCore({
     // Fix `Overload resolution failed.` when using multi-threaded ffmpeg-core.
-    // Encoded wasmURL and workerURL in the URL as a hack to fix locateFile issue.
+    // Encoded wasmURL and optional workerURL in the URL as a hack to fix locateFile issue.
     mainScriptUrlOrBlob: `${coreURL}#${btoa(
       JSON.stringify({ wasmURL, workerURL })
     )}`,
